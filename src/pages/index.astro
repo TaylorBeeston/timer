@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Timer from '../components/Timer';
+import Clock from '../assets/images/clock.webp';
+---
+
+<Layout title="Welcome to Astro.">
+    <main class="h-full w-full flex items-center justify-center flex-col relative">
+        <img src={Clock} class="h-full absolute" />
+        <section
+            class="relative z-10 bg-gray-100 rounded p-8 flex flex-col items-center justify-center gap-4"
+        >
+            <h1 class="font-sans text-4xl">⏲ Timer</h1>
+            <Timer client:load />
+        </section>
+    </main>
+</Layout>
