@@ -36,6 +36,7 @@ const Timer: React.FC = () => {
     const [timeRemaining, setTimeRemaining] = useState(60);
     const [isCountingDown, setIsCountingDown] = useState(false);
     const [playAlarm, setPlayAlarm] = useState(false);
+    const [mute, setMute] = useState(false);
 
     const timer = useRef<number | undefined>();
 
@@ -52,6 +53,7 @@ const Timer: React.FC = () => {
 
     const incrementTime = () => setTime(oldTime => oldTime + 1);
     const decrementTime = () => setTime(oldTime => Math.max(oldTime - 1, 1));
+
     useEffect(() => {
         setTimeRemaining(time);
     }, [time]);
@@ -66,7 +68,7 @@ const Timer: React.FC = () => {
 
     return (
         <section>
-            {playAlarm && <audio autoPlay src={Alarm}></audio>}
+            {!mute && playAlarm && <audio autoPlay src={Alarm}></audio>}
             <input
                 className={`p-4 text-2xl mb-4 ${
                     isCountingDown ? getBgColorClass(timeRemaining) : ''
@@ -94,7 +96,7 @@ const Timer: React.FC = () => {
                     if (e.deltaY > 0) decrementTime();
                 }}
             />
-            <section className="flex justify-between">
+            <section className="flex justify-between items-center">
                 <button
                     className={`border rounded ${
                         isCountingDown ? 'bg-red-200' : 'bg-green-200'
@@ -104,6 +106,15 @@ const Timer: React.FC = () => {
                 >
                     {isCountingDown ? 'Stop' : 'Start'}
                 </button>
+                <label>
+                    <input
+                        className="mr-1"
+                        type="checkbox"
+                        value={mute}
+                        onChange={() => setMute(!mute)}
+                    />
+                    Mute
+                </label>
                 <button
                     className="border rounded bg-blue-200 py-2 px-8"
                     type="button"
