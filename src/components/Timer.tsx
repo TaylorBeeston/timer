@@ -50,6 +50,8 @@ const Timer: React.FC = () => {
         setIsCountingDown(!isCountingDown);
     };
 
+    const incrementTime = () => setTime(oldTime => oldTime + 1);
+    const decrementTime = () => setTime(oldTime => Math.max(oldTime - 1, 1));
     useEffect(() => {
         setTimeRemaining(time);
     }, [time]);
@@ -82,14 +84,14 @@ const Timer: React.FC = () => {
                 onKeyDown={e => {
                     if (time !== timeRemaining) return;
 
-                    if (e.key === 'ArrowUp') setTime(oldTime => oldTime + 1);
-                    if (e.key === 'ArrowDown') setTime(oldTime => oldTime - 1);
+                    if (e.key === 'ArrowUp') incrementTime();
+                    if (e.key === 'ArrowDown') decrementTime();
                 }}
                 onWheel={e => {
                     if (time !== timeRemaining) return;
 
-                    if (e.deltaY < 0) setTime(oldTime => oldTime + 1);
-                    if (e.deltaY > 0) setTime(oldTime => oldTime - 1);
+                    if (e.deltaY < 0) incrementTime();
+                    if (e.deltaY > 0) decrementTime();
                 }}
             />
             <section className="flex justify-between">
