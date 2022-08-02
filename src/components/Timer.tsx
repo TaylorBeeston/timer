@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Alarm from '../assets/audio/BassAlarm.wav';
 
 const displayTime = (time: number) => {
     return `${Math.floor(time / 3600)
@@ -34,8 +35,20 @@ const Timer: React.FC = () => {
     const [time, setTime] = useState(60);
     const [timeRemaining, setTimeRemaining] = useState(60);
     const [isCountingDown, setIsCountingDown] = useState(false);
+    const [playAlarm, setPlayAlarm] = useState(false);
 
     const timer = useRef<number | undefined>();
+
+    const reset = (playAlarm = false) => {
+        if (typeof timer.current === 'number') clearTimeout(timer.current);
+        setIsCountingDown(false);
+        setTimeRemaining(time);
+        setPlayAlarm(playAlarm);
+    };
+    const start = () => {
+        setPlayAlarm(false);
+        setIsCountingDown(!isCountingDown);
+    };
 
     useEffect(() => {
         setTimeRemaining(time);
@@ -43,11 +56,7 @@ const Timer: React.FC = () => {
 
     useEffect(() => {
         if (isCountingDown) {
-            if (timeRemaining === 0) {
-                setIsCountingDown(false);
-                setTimeRemaining(time);
-                return;
-            }
+            if (timeRemaining === 0) return reset(true);
 
             timer.current = setTimeout(() => setTimeRemaining(oldTime => oldTime - 1), 1000);
         }
@@ -55,6 +64,7 @@ const Timer: React.FC = () => {
 
     return (
         <section>
+            {playAlarm && <audio autoPlay src={Alarm}></audio>}
             <input
                 className={`p-4 text-2xl mb-4 ${
                     isCountingDown ? getBgColorClass(timeRemaining) : ''
@@ -88,18 +98,14 @@ const Timer: React.FC = () => {
                         isCountingDown ? 'bg-red-200' : 'bg-green-200'
                     } py-2 px-8`}
                     type="button"
-                    onClick={() => setIsCountingDown(!isCountingDown)}
+                    onClick={start}
                 >
                     {isCountingDown ? 'Stop' : 'Start'}
                 </button>
                 <button
                     className="border rounded bg-blue-200 py-2 px-8"
                     type="button"
-                    onClick={() => {
-                        if (typeof timer.current === 'number') clearTimeout(timer.current);
-                        setIsCountingDown(false);
-                        setTimeRemaining(time);
-                    }}
+                    onClick={() => reset()}
                 >
                     Reset
                 </button>
